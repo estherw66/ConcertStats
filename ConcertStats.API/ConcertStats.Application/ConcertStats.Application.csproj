@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ConcertStats.Core\ConcertStats.Core.csproj" />
+    </ItemGroup>
+
 </Project>
