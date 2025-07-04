@@ -10,7 +10,7 @@ public class User
     public UserProfile Profile { get; set; } = new();
     public UserCredentials Credentials { get; set; } = new();
     public UserSettings Settings { get; set; } = new();
-    public ICollection<UserConcert> ConcertsVisited { get; set; } = [];
+    // public ICollection<UserConcert> ConcertsVisited { get; set; } = [];
 }
 
 // artist

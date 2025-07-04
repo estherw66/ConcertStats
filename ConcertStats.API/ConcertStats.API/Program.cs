@@ -1,4 +1,5 @@
-using ConcertStats.Infrastucture.Persistence;
+using ConcertStats.Infrastructure;
+using ConcertStats.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,9 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // database
-var connectionString = builder.Configuration.GetConnectionString("TestDb");
-builder.Services.AddDbContext<ConcertStatsDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+var connectionString = builder.Configuration.GetConnectionString("TestDb") 
+    ?? throw new InvalidOperationException("TestDb connection string not found");
+
+builder.Services.AddInfrastructure(connectionString);
 
 var app = builder.Build();
 

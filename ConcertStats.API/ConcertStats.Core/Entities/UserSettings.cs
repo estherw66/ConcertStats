@@ -12,6 +12,7 @@ public class UserSettings
         TwoFactorEnabled = false;
     }
     
+    public int Id { get; set; }
     public string? TimeZone { get; set; }
     public Language Language { get; set; }
     public Theme Theme { get; set; }

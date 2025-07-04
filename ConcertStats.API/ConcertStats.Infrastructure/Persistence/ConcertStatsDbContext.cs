@@ -1,7 +1,7 @@
 using ConcertStats.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConcertStats.Infrastucture.Persistence;
+namespace ConcertStats.Infrastructure.Persistence;
 
 public class ConcertStatsDbContext : DbContext
 {
@@ -11,7 +11,6 @@ public class ConcertStatsDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
-    public DbSet<UserConcert> UserConcerts { get; set; }
     public DbSet<UserCredentials> UserCredentials { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
