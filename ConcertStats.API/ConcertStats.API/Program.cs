@@ -1,9 +1,6 @@
 using ConcertStats.Application;
 using ConcertStats.Application.Configuration;
 using ConcertStats.Infrastructure;
-using ConcertStats.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,8 +34,8 @@ builder.Services.Configure<EncryptionConfig>(
     builder.Configuration.GetSection("EncryptionConfig:Password"));
 
 // database
-var connectionString = builder.Configuration.GetConnectionString("TestDb") 
-    ?? throw new InvalidOperationException("TestDb connection string not found");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("DefaultConnection not found");
 
 builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddApplication();

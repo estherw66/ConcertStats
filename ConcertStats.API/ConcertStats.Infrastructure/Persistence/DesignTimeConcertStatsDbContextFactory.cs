@@ -4,17 +4,22 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace ConcertStats.Infrastructure.Persistence;
 
-internal class DesignTimeConcertStatsDbContextFactory : IDesignTimeDbContextFactory<ConcertStatsDbContext>
+internal class DesignTimeConcertStatsDbContextFactory
+    : IDesignTimeDbContextFactory<ConcertStatsDbContext>
 {
+
     public ConcertStatsDbContext CreateDbContext(string[] args)
     {
-        const string connectionString = "Server=localhost;Port=3306;Database=concert_stats;Uid=root;Pwd=CountingSheep;";
+        DotNetEnv.Env.Load();
+        var connectionString = Environment.GetEnvironmentVariable("CONCERT_STATS_CONNECTION_STRING") ??
+                               throw new InvalidOperationException("DefaultConnection not found");
+
         const string migrationsHistoryTable = "_ConcertStatsMigrationsHistory";
         const string migrationsHistorySchema = "concert_stats";
         
         var optionsBuilder = new DbContextOptionsBuilder<ConcertStatsDbContext>()
             .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
-                options => options.SchemaBehavior(MySqlSchemaBehavior.Ignore));
+                sqlOptions => sqlOptions.SchemaBehavior(MySqlSchemaBehavior.Ignore));
         
         return new ConcertStatsDbContext(optionsBuilder.Options);
     }

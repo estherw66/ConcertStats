@@ -42,7 +42,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserCredentials", b =>
@@ -91,7 +91,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserCredentials");
+                    b.ToTable("UserCredentials", (string)null);
                 });
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserProfile", b =>
@@ -123,7 +123,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserRoleJoin", b =>
@@ -136,7 +136,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
                     b.HasKey("UserId", "UserRole");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserSettings", b =>
@@ -170,7 +170,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSettings", (string)null);
                 });
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserCredentials", b =>
