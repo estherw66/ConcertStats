@@ -25,50 +25,34 @@ public class UserService(
             throw new ArgumentException("Please fill in all required fields.");
         }
         
-        // validate password strength
         ValidatePasswordStrength(request.Password);
-        
-        // validate email format
         ValidateEmail(request.Email);
-        
-        // check if email already exists
-        await ValidateEmailHash(request.Email);
-        
-        // validate username format
+        await VerifyUniqueEmail(request.Email);
         ValidateUsername(request.Username);
         
-        // check if username already exists
         var userByUsername = await userRepository.GetByUsernameAsync(request.Username);
         if (userByUsername != null)
         {
             throw new InvalidOperationException("Username already exists.");
         }
             
-        // map request to entity
         var user = CreateUserRequestDtoMapper.ToEntity(request);
             
-        // hash password
         var hashedPassword = hasher.HashPassword(user.Credentials, request.Password);
         user.Credentials.PasswordHash = hashedPassword;
             
-        // encrypt sensitive data
         var encryptedEmail = await encryptionService.EncryptAsync(request.Email);
         user.Credentials.Email = encryptedEmail;
         
-        // store hash for email verification
         var emailHash = await encryptionService.HashEmailAsync(request.Email);
         user.Credentials.EmailHash = emailHash;
         
-        // set user role
         user.Roles.Add(new UserRoleJoin {UserRole = UserRole.User});    
         
-        // save entity
         await userRepository.CreateAsync(user);
 
-        // map entity to DTO
         var userDto = UserDtoMapper.ToDto(user);
 
-        // return DTO
         return userDto;
     }
 
@@ -119,34 +103,138 @@ public class UserService(
         throw new NotImplementedException();
     }
 
-    public Task<UserDto> UpdateUserProfileAsync(int userId, UpdateUserProfileRequest request)
+    public async Task<UserDto> UpdateUserProfileAsync(int userId, UpdateUserProfileRequest request)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(request.FullName))
+        {
+            throw new ArgumentException("Please fill in all required fields.");
+        }
+
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+        
+        user.Profile.FullName = request.FullName;
+        if (!string.IsNullOrEmpty(request.Bio))
+        {
+            user.Profile.Bio = request.Bio;
+        }
+        if (!string.IsNullOrEmpty(request.ProfilePictureUrl))
+        {
+            user.Profile.ProfilePictureUrl = request.ProfilePictureUrl;
+        }
+        if (!string.IsNullOrEmpty(request.Location))
+        {
+            user.Profile.Location = request.Location;
+        }
+        
+        await userRepository.UpdateAsync(user);
+        var userDto = UserDtoMapper.ToDto(user);
+        return userDto;
     }
 
-    public Task<UserDto> UpdateUserCredentialsAsync(int userId, UpdateUserCredentialsRequest request)
+    public async Task<UserDto> UpdateUserCredentialsAsync(int userId, UpdateUserCredentialsRequest request)
     {
-        throw new NotImplementedException();
+        ValidateEmail(request.Email);
+        
+        await VerifyUniqueEmail(request.Email);
+        
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NullReferenceException("User not found."); // todo: use custom exception
+        }
+        
+        var encryptedEmail = await encryptionService.EncryptAsync(request.Email);
+        
+        var hashedEmail = await encryptionService.HashEmailAsync(request.Email);
+        
+        user.Credentials.Email = encryptedEmail;
+        user.Credentials.EmailHash = hashedEmail;
+        
+        user.Credentials.EmailConfirmed = false;
+        
+        await userRepository.UpdateAsync(user);
+        
+        var userDto = UserDtoMapper.ToDto(user);
+        
+        return userDto;
     }
 
-    public Task<UserDto> UpdateUserSettingsAsync(int userId, UpdateUserSettingsRequest request)
+    public async Task<UserDto> UpdateUserSettingsAsync(int userId, UpdateUserSettingsRequest request)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NullReferenceException("User not found."); // todo: use custom exception
+        }
+        
+        user.Settings.Language = ParseEnum<Language>(request.Language, "language");
+        user.Settings.Theme = ParseEnum<Theme>(request.Theme, "Theme");
+        user.Settings.PrivacySettings = ParseEnum<PrivacySettings>(request.PrivacySettings, "Privacy Settings");
+        
+        await userRepository.UpdateAsync(user);
+        
+        var userDto = UserDtoMapper.ToDto(user);
+        return userDto;
     }
 
-    public Task UpdateUserPasswordAsync(int userId, UpdateUserPasswordRequest request)
+    public async Task UpdateUserPasswordAsync(int userId, UpdateUserPasswordRequest request)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword))
+        {
+            throw new ArgumentException("Please fill in all required fields.");
+        }
+        
+        ValidatePasswordStrength(request.NewPassword);
+        
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NullReferenceException("User not found."); // todo: use custom exception
+        }
+
+        var passwordVerificationResult = hasher.VerifyHashedPassword(user.Credentials, user.Credentials.PasswordHash, request.OldPassword);
+        if (passwordVerificationResult == PasswordVerificationResult.Failed)
+        {
+            throw new InvalidOperationException("Incorrect credentials.");
+        }
+        
+        if (request.NewPassword == request.OldPassword)
+        {
+            throw new ArgumentException("New password cannot be the same as the old password.");
+        }
+        
+        var hashedPassword = hasher.HashPassword(user.Credentials, request.NewPassword);
+        user.Credentials.PasswordHash = hashedPassword;
+        
+        await userRepository.UpdateAsync(user);
     }
 
-    public Task DeleteUserAsync(int userId)
+    public async Task DeleteUserAsync(int userId)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NullReferenceException("User not found."); // todo: use custom exception
+        }
+        
+        await userRepository.DeleteAsync(userId);
     }
 
-    public Task DeactivateUserAsync(int userId)
+    public async Task DeactivateUserAsync(int userId)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new NullReferenceException("User not found."); // todo: use custom exception
+        }
+        
+        user.Credentials.IsActive = false;
+        
+        await userRepository.UpdateAsync(user);
     }
     
     private void ValidatePasswordStrength(string password)
@@ -186,7 +274,7 @@ public class UserService(
         }
     }
     
-    private async Task ValidateEmailHash(string email)
+    private async Task VerifyUniqueEmail(string email)
     {
         var inputHash = await encryptionService.HashEmailAsync(email);
         var user = await userRepository.GetByEmailAsync(inputHash);
@@ -203,5 +291,14 @@ public class UserService(
         {
             throw new ArgumentException("Username invalid");
         }
+    }
+    
+    private TEnum ParseEnum<TEnum>(string value, string fieldName) where TEnum : struct
+    {
+        if (Enum.TryParse<TEnum>(value, true, out var result))
+        {
+            return result;
+        }
+        throw new ArgumentException($"Invalid {fieldName} specified.");
     }
 }
