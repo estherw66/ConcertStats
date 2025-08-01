@@ -46,6 +46,8 @@ public class UserRepository(ConcertStatsDbContext context) : IUserRepository
         return await context.Users
             .Include(u => u.Profile)
             .Include(u => u.Roles)
+            .Include(u => u.Settings)
+            .Include(u => u.Credentials)
             .FirstOrDefaultAsync(u => u.Username == username);
     }
 

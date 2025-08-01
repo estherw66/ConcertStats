@@ -50,4 +50,43 @@ public class UserController(IUserService userService, ILogger<UserController> lo
             return NotFound(ex.Message);
         }
     }
+
+    [HttpGet("username/{username}")]
+    [ProducesResponseType<UserProfileDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUserByUsernameAsync(string username)
+    {
+        try
+        {
+            var user = await userService.GetUserProfileByUsernameAsync(username);
+            return Ok(user);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet]
+    [ProducesResponseType<IEnumerable<UserResultDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetUsersAsync([FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string searchQuery = "")
+    {
+        try
+        {
+            var users = await userService.GetUsersAsync(pageNumber, pageSize, searchQuery);
+            return Ok(users);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

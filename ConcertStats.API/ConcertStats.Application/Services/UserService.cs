@@ -87,18 +87,35 @@ public class UserService(
         return userDto;
     }
 
-    public Task<UserProfileDto> GetUserProfileByUsernameAsync(string username)
+    public async Task<UserProfileDto> GetUserProfileByUsernameAsync(string username)
     {
-        throw new NotImplementedException();
+        ValidateUsername(username);
+        
+        var user = await userRepository.GetByUsernameAsync(username);
+        if (user == null || !user.Credentials.IsActive)
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+
+        // todo: check privacy settings
+        
+        var userDto = UserProfileDtoMapper.ToDto(user);
+        return userDto;
     }
 
-    public Task<UserResultDto> GetUsersAsync(int pageNumber, int pageSize)
+    public async Task<IEnumerable<UserResultDto>> GetUsersAsync(int pageNumber, int pageSize, string searchQuery)
     {
-        throw new NotImplementedException();
+        var skip = (pageNumber - 1) * pageSize;
+        
+        var users = await userRepository.GetAllAsync(skip, pageSize, searchQuery);
+        var userDtos = users.Select(UserResultMapper.ToDto).ToList();
+        
+        return userDtos;
     }
 
     public Task<UserDto> UpdateUserAsync(int userId, UpdateUserRequest request)
     {
+        
         throw new NotImplementedException();
     }
 
@@ -184,7 +201,7 @@ public class UserService(
         var usernamePattern = @"^[a-zA-Z0-9_]{3,20}$"; 
         if (!Regex.IsMatch(username, usernamePattern))
         {
-            throw new ArgumentException("Username must be 3-20 characters long and can only contain letters, numbers, and underscores.");
+            throw new ArgumentException("Username invalid");
         }
     }
 }

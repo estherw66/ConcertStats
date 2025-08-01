@@ -8,7 +8,7 @@ public interface IUserService
     Task<UserDto> CreateUserAsync(CreateUserRequest request);
     Task<UserDto> GetUserByIdAsync(int userId);
     Task<UserProfileDto> GetUserProfileByUsernameAsync(string username);
-    Task<UserResultDto> GetUsersAsync(int pageNumber, int pageSize);
+    Task<IEnumerable<UserResultDto>> GetUsersAsync(int pageNumber, int pageSize, string searchQuery);
     Task<UserDto> UpdateUserAsync(int userId, UpdateUserRequest request);
     Task<UserDto> UpdateUserProfileAsync(int userId, UpdateUserProfileRequest request);
     Task<UserDto> UpdateUserCredentialsAsync(int userId, UpdateUserCredentialsRequest request);
