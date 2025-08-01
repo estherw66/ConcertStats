@@ -36,10 +36,18 @@ public class UserController(IUserService userService, ILogger<UserController> lo
     }
 
     [HttpGet("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
-        return Ok($"User with ID {id} retrieved successfully.");
+        try
+        {
+            var user = await userService.GetUserByIdAsync(id);
+            return Ok(user);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

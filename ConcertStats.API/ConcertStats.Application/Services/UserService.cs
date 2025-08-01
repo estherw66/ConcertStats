@@ -72,9 +72,19 @@ public class UserService(
         return userDto;
     }
 
-    public Task<UserDto> GetUserByIdAsync(int userId)
+    public async Task<UserDto> GetUserByIdAsync(int userId)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+        
+        var decryptedEmail = await encryptionService.DecryptAsync(user.Credentials.Email);
+        var userDto = UserDtoMapper.ToDto(user);
+        userDto.Email = decryptedEmail;
+        
+        return userDto;
     }
 
     public Task<UserProfileDto> GetUserProfileByUsernameAsync(string username)

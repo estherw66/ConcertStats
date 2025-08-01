@@ -41,7 +41,7 @@ public class EncryptionService(IOptions<EncryptionConfig> options) : IEncryption
 
         using var memoryStream = new MemoryStream();
         memoryStream.Write(salt, 0, salt.Length); // add salt to encrypted data
-        memoryStream.Write(key, 0, key.Length); // add key to encrypted data
+        memoryStream.Write(iv, 0, iv.Length); // add iv to encrypted data
         await using var cryptoStream = new CryptoStream(memoryStream, aes.CreateEncryptor(aes.Key, iv), CryptoStreamMode.Write);
         await using var writer = new StreamWriter(cryptoStream);
         await writer.WriteAsync(data);
