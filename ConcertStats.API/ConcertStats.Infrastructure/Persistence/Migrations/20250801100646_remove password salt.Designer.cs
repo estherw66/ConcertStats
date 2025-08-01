@@ -4,6 +4,7 @@ using ConcertStats.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConcertStats.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ConcertStatsDbContext))]
-    partial class ConcertStatsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801100646_remove password salt")]
+    partial class removepasswordsalt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,6 +38,10 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -59,10 +66,6 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("EmailHash")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -126,19 +129,6 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("ConcertStats.Core.Entities.UserRoleJoin", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserRole")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "UserRole");
-
-                    b.ToTable("UserRoles");
-                });
-
             modelBuilder.Entity("ConcertStats.Core.Entities.UserSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -195,17 +185,6 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ConcertStats.Core.Entities.UserRoleJoin", b =>
-                {
-                    b.HasOne("ConcertStats.Core.Entities.User", "User")
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ConcertStats.Core.Entities.UserSettings", b =>
                 {
                     b.HasOne("ConcertStats.Core.Entities.User", "User")
@@ -224,8 +203,6 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
                     b.Navigation("Profile")
                         .IsRequired();
-
-                    b.Navigation("Roles");
 
                     b.Navigation("Settings")
                         .IsRequired();

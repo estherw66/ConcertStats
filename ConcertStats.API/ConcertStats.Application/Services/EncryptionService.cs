@@ -2,21 +2,21 @@ using System.Security.Cryptography;
 using System.Text;
 using ConcertStats.Application.Configuration;
 using ConcertStats.Application.Interfaces.Services;
+using ConcertStats.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
 namespace ConcertStats.Application.Services;
 
-public class EncryptionService : IEncryptionService
+public class EncryptionService(IOptions<EncryptionConfig> options) : IEncryptionService
 {
-    private readonly string _password;
+    private readonly string _password = options.Value.Password;
     private const int KeySize = 32;
     private const int SaltSize = 16;
     private const int IvSize = 16;
-
-    public EncryptionService(IOptions<EncryptionConfig> options)
-    {
-        _password = options.Value.Password;
-    }
+    private const int HashSize = 32;
+    
+    private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
     
     private static byte[] DeriveKeyFromPassword(string password, byte[] salt)
     {
@@ -85,5 +85,13 @@ public class EncryptionService : IEncryptionService
         var decryptedData = await reader.ReadToEndAsync();
         
         return decryptedData;
+    }
+
+    public Task<string> HashEmailAsync(string email)
+    {
+        using var sha512 = SHA512.Create();
+        var bytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(email.Trim().ToLowerInvariant()));
+        var hash = Convert.ToHexString(bytes);
+        return Task.FromResult(hash);
     }
 }

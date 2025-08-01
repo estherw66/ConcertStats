@@ -1,5 +1,8 @@
+using ConcertStats.Application;
+using ConcertStats.Application.Configuration;
 using ConcertStats.Infrastructure;
 using ConcertStats.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,11 +14,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication()
+    .AddJwtBearer(options =>
+    {
+        // todo configure JWT authentication
+        
+        // options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        // {
+        //     ValidateIssuer = true,
+        //     ValidateAudience = true,
+        //     ValidateLifetime = true,
+        //     ValidateIssuerSigningKey = true,
+        //     ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        //     ValidAudience = builder.Configuration["Jwt:Audience"],
+        //     IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+        //         System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        // };
+    });
+
+builder.Services.Configure<EncryptionConfig>(
+    builder.Configuration.GetSection("EncryptionConfig:Password"));
+
 // database
 var connectionString = builder.Configuration.GetConnectionString("TestDb") 
     ?? throw new InvalidOperationException("TestDb connection string not found");
 
 builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
