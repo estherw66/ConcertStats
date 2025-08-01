@@ -171,7 +171,7 @@ public class UserService(
             throw new NullReferenceException("User not found."); // todo: use custom exception
         }
         
-        user.Settings.Language = ParseEnum<Language>(request.Language, "language");
+        user.Settings.Language = ParseEnum<Language>(request.Language, "Language");
         user.Settings.Theme = ParseEnum<Theme>(request.Theme, "Theme");
         user.Settings.PrivacySettings = ParseEnum<PrivacySettings>(request.PrivacySettings, "Privacy Settings");
         

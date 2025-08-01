@@ -20,7 +20,9 @@ public class UserRepository(ConcertStatsDbContext context) : IUserRepository
         
         if (!string.IsNullOrEmpty(searchQuery))
         {
-            query = query.Where(u => u.Username.Contains(searchQuery) || u.Profile.FullName.Contains(searchQuery));
+            var likeQuery = $"%{searchQuery}%";
+            query = query.Where(u => EF.Functions.Like(u.Username, likeQuery) ||
+                                     EF.Functions.Like(u.Profile.FullName, likeQuery));
         }
         
         var users = await query

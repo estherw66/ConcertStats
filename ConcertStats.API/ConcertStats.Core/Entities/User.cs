@@ -6,7 +6,7 @@ public class User
 {
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
     public ICollection<UserRoleJoin> Roles { get; set; } = [];
