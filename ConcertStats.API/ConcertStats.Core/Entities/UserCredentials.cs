@@ -7,6 +7,7 @@ public class UserCredentials
         EmailConfirmed = false;
         IsActive = true;
         Retry = 0;
+        IsLockedOut = false;
     }
     
     public int Id { get; init; }
@@ -16,6 +17,7 @@ public class UserCredentials
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public int Retry { get; set; }
+    public bool IsLockedOut { get; set; }
     public DateTime? LastSuccessfulLogin { get; set; }
     public DateTime? LastFailedLogin { get; set; }
     public DateTime? LockoutEnd { get; set; }
