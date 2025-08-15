@@ -52,7 +52,7 @@ public class AuthService(IUserRepository userRepository, IPasswordHasher<UserCre
         var user = await userRepository.GetByEmailAsync(email);
         if (user == null)
         {
-            throw new InvalidOperationException($"User with email {email} not found");
+            throw new UnauthorizedAccessException("Invalid email or password");
         }
         return user;
     }
@@ -62,7 +62,7 @@ public class AuthService(IUserRepository userRepository, IPasswordHasher<UserCre
         var user = await FindUserByEmail(email);
 
         if (!user.Credentials.IsLockedOut) return false;
-        if (user.Credentials.LockoutEnd.HasValue && user.Credentials.LockoutEnd > DateTime.Now)
+        if (user.Credentials.LockoutEnd.HasValue && user.Credentials.LockoutEnd > DateTime.UtcNow)
         {
             return true;
         }
@@ -82,7 +82,7 @@ public class AuthService(IUserRepository userRepository, IPasswordHasher<UserCre
         var user = await FindUserByEmail(email);
         
         if (user.Credentials.LastFailedLogin != null && 
-            user.Credentials.LastFailedLogin.Value.AddMinutes(15) < DateTime.UtcNow)
+            user.Credentials.LastFailedLogin.Value.AddMinutes(15) > DateTime.UtcNow)
         {
             user.Credentials.Retry = 0;
         }
