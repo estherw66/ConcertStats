@@ -58,6 +58,8 @@ public class UserRepository(ConcertStatsDbContext context) : IUserRepository
         return await context.Users
             .Include(u => u.Credentials)
             .Include(u => u.Roles)
+            .Include(u => u.Profile)
+            .Include(u => u.Settings)
             .FirstOrDefaultAsync(u => u.Credentials.EmailHash == email);
     }
 
