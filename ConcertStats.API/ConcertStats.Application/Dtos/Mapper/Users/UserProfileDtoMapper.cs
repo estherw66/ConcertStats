@@ -1,5 +1,6 @@
 using ConcertStats.Application.Dtos.Users;
 using ConcertStats.Core.Entities;
+using ConcertStats.Core.Entities.User;
 
 namespace ConcertStats.Application.Dtos.Mapper.Users;
 

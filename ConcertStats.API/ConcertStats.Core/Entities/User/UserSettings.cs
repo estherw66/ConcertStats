@@ -19,6 +19,6 @@ public class UserSettings
     public PrivacySettings PrivacySettings { get; set; }
     public bool TwoFactorEnabled { get; set; }
 
-    public User? User { get; set; }
+    public User.User? User { get; set; }
     public int UserId { get; set; }
 }

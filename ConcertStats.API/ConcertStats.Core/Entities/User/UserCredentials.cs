@@ -22,7 +22,7 @@ public class UserCredentials
     public DateTime? LastFailedLogin { get; set; }
     public DateTime? LockoutEnd { get; set; }
 
-    public User? User { get; set; }
+    public User.User? User { get; set; }
     public int UserId { get; set; }
 }
 
