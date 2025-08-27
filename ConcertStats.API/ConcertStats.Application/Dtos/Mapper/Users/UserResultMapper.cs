@@ -10,6 +10,7 @@ public static class UserResultMapper
     {
         return new UserResultDto
         {
+            Id = user.Id,
             ProfilePictureUrl = user.Profile.ProfilePictureUrl ?? string.Empty,
             Username = user.Username,
             FullName = user.Profile.FullName
