@@ -60,4 +60,14 @@ public class VenueRepository(ConcertStatsDbContext context) : IVenueRepository
         await context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> VenueExistsAsync(string name, string city, string country)
+    {
+        var venue = await context.Venues
+            .FirstOrDefaultAsync(v => v.Name == name 
+                                      && v.City == city 
+                                      && v.Country == country);
+        
+        return venue != null;
+    }
 }

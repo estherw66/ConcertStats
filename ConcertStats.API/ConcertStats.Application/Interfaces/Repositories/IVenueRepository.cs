@@ -11,4 +11,5 @@ public interface IVenueRepository
     Task<Venue?> GetByNameAsync(string name);
     Task UpdateAsync(Venue venue);
     Task<bool> DeleteAsync(int venueId);
+    Task<bool> VenueExistsAsync(string name, string city, string country);
 }

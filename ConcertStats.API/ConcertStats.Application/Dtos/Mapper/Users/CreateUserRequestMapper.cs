@@ -5,7 +5,7 @@ using ConcertStats.Core.Enums;
 
 namespace ConcertStats.Application.Dtos.Mapper.Users;
 
-public static class CreateUserRequestDtoMapper
+public static class CreateUserRequestMapper
 {
     public static User ToEntity(CreateUserRequest request)
     {
