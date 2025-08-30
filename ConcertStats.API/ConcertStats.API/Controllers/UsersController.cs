@@ -7,7 +7,7 @@ namespace ConcertStats.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService, ILogger<UserController> logger) : ControllerBase
+public class UsersController(IUserService userService, ILogger<UsersController> logger) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -18,7 +18,8 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         try
         {
             var user = await userService.CreateUserAsync(request);
-            return CreatedAtAction(nameof(GetUserByIdAsync), new { id = user.Id }, user);
+            logger.LogInformation("Created user with ID {UserId}", user.Id);
+            return CreatedAtAction("GetUserById", new { id = user.Id }, user);
         }
         catch (InvalidOperationException ex)
         {
@@ -35,10 +36,10 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         }
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "GetUserById")]
     [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUserByIdAsync(int id)
+    public async Task<ActionResult> GetUserByIdAsync(int id)
     {
         try
         {

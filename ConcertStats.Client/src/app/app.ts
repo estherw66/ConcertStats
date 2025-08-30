@@ -1,28 +1,13 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { Nav } from "../layout/nav/nav";
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [Nav, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit{
-  private http = inject(HttpClient);
-  protected readonly title = signal('ConcertStats.Client');
-  protected users = signal<any>([]);
-
-  async ngOnInit() {
-    this.users.set(await this.getUsers());
-  }
-
-  async getUsers(){
-    try {
-      return lastValueFrom(this.http.get('https://localhost:7207/api/user'));
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
+export class App {
+  protected router = inject(Router);
 }

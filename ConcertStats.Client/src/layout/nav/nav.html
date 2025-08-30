@@ -1,0 +1,46 @@
+<nav
+    class="fixed top-0 w-full z-50 shadow bg-gray-800 dark:bg-gray-800/50 dark:after:pointer-events-none dark:after:absolute dark:after:inset-x-0 dark:after:bottom-0 dark:after:h-px dark:after:bg-white/10">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-20 items-center justify-between">
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div class="flex shrink-0 items-center">
+                    <a routerLink="/" class="flex items-center gap-2 cursor-pointer">
+                        <span class="text-white text-3xl font-bold">ConcertStats</span>
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:block">
+                    <div class="flex space-x-6">
+                        <a
+                            class="rounded-md px-4 py-3 text-lg font-medium text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer">Concerts</a>
+                        <a
+                            class="rounded-md px-4 py-3 text-lg font-medium text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer">Artists</a>
+                        <a
+                            class="rounded-md px-4 py-3 text-lg font-medium text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer">Venues</a>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                @if (authService.currentUser(); as user) {
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="flex items-center text-white text-xl gap-3 cursor-pointer rounded-md px-4 py-3 bg-white/20">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                        <li><a>Edit profile</a></li>
+                        <li><a (click)="logout()">Logout</a></li>
+                    </ul>
+                </div>
+                } @else {
+                <a routerLink="/login"
+                    class="text-gray-300 hover:text-white px-4 py-3 rounded-md text-lg font-medium cursor-pointer">Login</a>
+                <a routerLink="/register"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-md text-lg font-semibold shadow ml-2 cursor-pointer">Sign
+                    Up</a>
+                }
+            </div>
+        </div>
+    </div>
+</nav>
