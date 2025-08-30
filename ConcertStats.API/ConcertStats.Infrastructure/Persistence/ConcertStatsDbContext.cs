@@ -60,5 +60,8 @@ public class ConcertStatsDbContext : DbContext
             .HasOne(ca => ca.Artist)
             .WithMany(a => a.Concerts)
             .HasForeignKey(ca => ca.ArtistId);
+
+        modelBuilder.Entity<Venue>()
+            .HasMany(v => v.Rooms);
     }
 }

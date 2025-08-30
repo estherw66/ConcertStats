@@ -14,26 +14,38 @@ public class VenueService(
 {
     public async Task<VenueDto> CreateVenueAsync(CreateVenueRequest request)
     {
+        // todo check room for whitespace
         if (string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.City) || string.IsNullOrEmpty(request.Country))
         {
             throw new ArgumentException("Please fill in all required fields.");
         }
         
-        // check if venue exists
-        if (await venueRepository.VenueExistsAsync(request.Name, request.City, request.Country))
+        var venue =
+            await venueRepository.GetByNameCityCountryAsync(request.Name, request.City, request.Country);
+        
+        if (venue == null)
         {
-            throw new InvalidOperationException("Venue already exists.");
+            var newVenue = CreateVenueRequestMapper.ToEntity(request);
+            if (!string.IsNullOrEmpty(request.RoomName))
+            {
+                // newVenue.Rooms.Add(request.RoomName);
+            }
+            
+            await venueRepository.CreateAsync(newVenue);
+            return VenueDtoMapper.ToDto(newVenue);
         }
         
-        // create venue
-        var venue = CreateVenueRequestMapper.ToEntity(request);
-        
-        // save venue
-        await venueRepository.CreateAsync(venue);
-        
-        // return venue dto
-        var venueDto = VenueDtoMapper.ToDto(venue);
-        return venueDto;
+        if (string.IsNullOrEmpty(request.RoomName)) return VenueDtoMapper.ToDto(venue);
+        // var roomExists = venue.Rooms.Any(r => r.Equals(request.RoomName, StringComparison.OrdinalIgnoreCase));
+        // if (roomExists)
+        // {
+        //     throw new InvalidOperationException("Room already exists for this venue.");
+        // }
+            
+        // venue.Rooms.Add(request.RoomName);
+        await venueRepository.UpdateAsync(venue);
+
+        return VenueDtoMapper.ToDto(venue);
     }
 
     public async Task<VenueDto> GetVenueByIdAsync(int venueId)
@@ -92,8 +104,14 @@ public class VenueService(
         return venueDto;
     }
 
-    public Task<bool> DeleteVenueAsync(int venueId)
+    public async Task<bool> DeleteVenueAsync(int venueId)
     {
-        throw new NotImplementedException();
+        var venue = await venueRepository.GetByIdAsync(venueId);
+        if (venue == null)
+        {
+            throw new InvalidOperationException("Venue not found.");
+        }
+
+        return await venueRepository.DeleteAsync(venueId);
     }
 }

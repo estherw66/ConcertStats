@@ -41,6 +41,14 @@ public class VenueRepository(ConcertStatsDbContext context) : IVenueRepository
             .FirstOrDefaultAsync(v => v.Name == name);
     }
 
+    public async Task<Venue?> GetByNameCityCountryAsync(string name, string city, string country)
+    {
+        return await context.Venues
+            .FirstOrDefaultAsync(v => v.Name == name 
+                                      && v.City == city 
+                                      && v.Country == country);
+    }
+
     public async Task UpdateAsync(Venue venue)
     {
         context.Venues.Update(venue);

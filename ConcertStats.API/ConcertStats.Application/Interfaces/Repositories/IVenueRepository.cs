@@ -9,6 +9,7 @@ public interface IVenueRepository
     Task<ICollection<Venue>> GetAllByCountryAsync(string country);
     Task<Venue?> GetByIdAsync(int venueId);
     Task<Venue?> GetByNameAsync(string name);
+    Task<Venue?> GetByNameCityCountryAsync(string name, string city, string country);
     Task UpdateAsync(Venue venue);
     Task<bool> DeleteAsync(int venueId);
     Task<bool> VenueExistsAsync(string name, string city, string country);
