@@ -13,19 +13,13 @@ import { LoginRequest } from '../../../types/auth';
 export class Login {
   protected authService = inject(AuthService);
   private router = inject(Router);
-  protected loginRequest: LoginRequest = {
-    email: '',
-    password: ''
-  };
+  protected loginRequest = {} as LoginRequest;
 
   login() {
     this.authService.login(this.loginRequest).subscribe({
       next: () => {
-        this.router.navigateByUrl('register');
-        this.loginRequest = {
-          email: '',
-          password: ''
-        };
+        this.router.navigateByUrl(`profile/${this.authService.currentUser()?.id}`);
+        this.loginRequest = {} as LoginRequest;
       }, error: err => {
         console.error('Login error:', err);
       }

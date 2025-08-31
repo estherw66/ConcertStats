@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../core/services/user-service';
 import { CreateUserRequest } from '../../../types/user';
+import { AuthService } from '../../../core/services/auth-service';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +13,8 @@ import { CreateUserRequest } from '../../../types/user';
 })
 export class Register {
   private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   protected request = {} as CreateUserRequest;
 
 
@@ -20,12 +23,11 @@ export class Register {
     this.userService.register(this.request).subscribe({
       next: res => {
         console.log('Server response:', res);
-        // Optionally navigate or show a success message
-        // Example: this.router.navigate(['/login']);
+        this.router.navigateByUrl(`profile/${this.authService.currentUser()?.id}`);
+        this.request = {} as CreateUserRequest;
       },
       error: err => {
         console.error('Registration failed:', err);
-        // Optionally show an error message to the user
       }
     });
   }

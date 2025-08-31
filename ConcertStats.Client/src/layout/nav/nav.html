@@ -25,11 +25,11 @@
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 @if (authService.currentUser(); as user) {
                 <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="flex items-center text-white text-xl gap-3 cursor-pointer rounded-md px-4 py-3 bg-white/20">
+                    <div tabindex="0" role="button" class="flex items-center text-white text-xl gap-3 cursor-pointer rounded-md px-4 py-3 bg-white/25">
                         <span>{{ user.username }}</span>
                     </div>
                     <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                        <li><a>Edit profile</a></li>
+                        <li><a routerLink="/profile/{{ user.id }}">Profile</a></li>
                         <li><a (click)="logout()">Logout</a></li>
                     </ul>
                 </div>
