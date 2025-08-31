@@ -19,10 +19,8 @@ export class Register {
 
 
   register() {
-    console.log(this.request);
     this.userService.register(this.request).subscribe({
       next: res => {
-        console.log('Server response:', res);
         this.router.navigateByUrl(`profile/${this.authService.currentUser()?.id}`);
         this.request = {} as CreateUserRequest;
       },

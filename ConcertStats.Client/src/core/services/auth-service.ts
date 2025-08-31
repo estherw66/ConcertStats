@@ -17,7 +17,6 @@ export class AuthService {
     return this.http.post<User>(this.baseUrl + 'auth/login', request).pipe(
       tap(user => {
         if (user) {
-          console.log('User logged in:', user);
           this.setCurrentUser(user);
         }
       })
