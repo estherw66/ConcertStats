@@ -36,7 +36,7 @@ public class UserService(
             throw new InvalidOperationException("Username already exists.");
         }
             
-        var user = CreateUserRequestDtoMapper.ToEntity(request);
+        var user = CreateUserRequestMapper.ToEntity(request);
             
         var hashedPassword = hasher.HashPassword(user.Credentials, request.Password);
         user.Credentials.PasswordHash = hashedPassword;
@@ -95,12 +95,6 @@ public class UserService(
         var userDtos = users.Select(UserResultMapper.ToDto).ToList();
         
         return userDtos;
-    }
-
-    public Task<UserDto> UpdateUserAsync(int userId, UpdateUserRequest request)
-    {
-        
-        throw new NotImplementedException();
     }
 
     public async Task<UserDto> UpdateUserProfileAsync(int userId, UpdateUserProfileRequest request)

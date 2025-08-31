@@ -22,7 +22,87 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ConcertStats.Core.Entities.User", b =>
+            modelBuilder.Entity("ConcertStats.Core.Entities.Artist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Artists");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.Concert", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsRescheduled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Tour")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("VenueId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VenueId");
+
+                    b.ToTable("Concerts");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.ConcertArtist", b =>
+                {
+                    b.Property<int>("ConcertId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArtistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.HasKey("ConcertId", "ArtistId");
+
+                    b.HasIndex("ArtistId");
+
+                    b.ToTable("ConcertArtists");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.User.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -176,9 +256,73 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.ToTable("UserSettings");
                 });
 
+            modelBuilder.Entity("ConcertStats.Core.Entities.Venue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Venues");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.Concert", b =>
+                {
+                    b.HasOne("ConcertStats.Core.Entities.Venue", "Venue")
+                        .WithMany()
+                        .HasForeignKey("VenueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Venue");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.ConcertArtist", b =>
+                {
+                    b.HasOne("ConcertStats.Core.Entities.Artist", "Artist")
+                        .WithMany("Concerts")
+                        .HasForeignKey("ArtistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcertStats.Core.Entities.Concert", "Concert")
+                        .WithMany("Artists")
+                        .HasForeignKey("ConcertId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artist");
+
+                    b.Navigation("Concert");
+                });
+
             modelBuilder.Entity("ConcertStats.Core.Entities.UserCredentials", b =>
                 {
-                    b.HasOne("ConcertStats.Core.Entities.User", "User")
+                    b.HasOne("ConcertStats.Core.Entities.User.User", "User")
                         .WithOne("Credentials")
                         .HasForeignKey("ConcertStats.Core.Entities.UserCredentials", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -189,7 +333,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserProfile", b =>
                 {
-                    b.HasOne("ConcertStats.Core.Entities.User", "User")
+                    b.HasOne("ConcertStats.Core.Entities.User.User", "User")
                         .WithOne("Profile")
                         .HasForeignKey("ConcertStats.Core.Entities.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -200,7 +344,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserRoleJoin", b =>
                 {
-                    b.HasOne("ConcertStats.Core.Entities.User", "User")
+                    b.HasOne("ConcertStats.Core.Entities.User.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -211,7 +355,7 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ConcertStats.Core.Entities.UserSettings", b =>
                 {
-                    b.HasOne("ConcertStats.Core.Entities.User", "User")
+                    b.HasOne("ConcertStats.Core.Entities.User.User", "User")
                         .WithOne("Settings")
                         .HasForeignKey("ConcertStats.Core.Entities.UserSettings", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -220,7 +364,17 @@ namespace ConcertStats.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ConcertStats.Core.Entities.User", b =>
+            modelBuilder.Entity("ConcertStats.Core.Entities.Artist", b =>
+                {
+                    b.Navigation("Concerts");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.Concert", b =>
+                {
+                    b.Navigation("Artists");
+                });
+
+            modelBuilder.Entity("ConcertStats.Core.Entities.User.User", b =>
                 {
                     b.Navigation("Credentials")
                         .IsRequired();

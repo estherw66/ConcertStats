@@ -3,6 +3,7 @@ using ConcertStats.Application.Dtos.Users;
 using ConcertStats.Application.Interfaces.Repositories;
 using ConcertStats.Application.Interfaces.Services;
 using ConcertStats.Core.Entities;
+using ConcertStats.Core.Entities.User;
 using Microsoft.AspNetCore.Identity;
 
 namespace ConcertStats.Application.Services;

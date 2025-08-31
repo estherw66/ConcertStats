@@ -1,4 +1,5 @@
 using ConcertStats.Core.Entities;
+using ConcertStats.Core.Entities.User;
 using ConcertStats.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,11 @@ public class ConcertStatsDbContext : DbContext
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
     public DbSet<UserRoleJoin> UserRoles { get; set; }
+
+    public DbSet<Artist> Artists { get; set; }  
+    public DbSet<Concert> Concerts { get; set; }
+    public DbSet<Venue> Venues { get; set; }
+    public DbSet<ConcertArtist> ConcertArtists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,5 +47,18 @@ public class ConcertStatsDbContext : DbContext
             .HasOne(ur => ur.User)
             .WithMany(u => u.Roles)
             .HasForeignKey(ur => ur.UserId);
+        
+        modelBuilder.Entity<ConcertArtist>()
+            .HasKey(ca => new { ca.ConcertId, ca.ArtistId });
+        
+        modelBuilder.Entity<ConcertArtist>()
+            .HasOne(ca => ca.Concert)
+            .WithMany(c => c.Artists)
+            .HasForeignKey(ca => ca.ConcertId);
+        
+        modelBuilder.Entity<ConcertArtist>()
+            .HasOne(ca => ca.Artist)
+            .WithMany(a => a.Concerts)
+            .HasForeignKey(ca => ca.ArtistId);
     }
 }

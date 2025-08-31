@@ -1,6 +1,4 @@
-using ConcertStats.Core.Enums;
-
-namespace ConcertStats.Core.Entities;
+namespace ConcertStats.Core.Entities.User;
 
 public class User
 {
@@ -16,8 +14,3 @@ public class User
     public UserSettings Settings { get; set; } = new();
     // public ICollection<UserConcert> ConcertsVisited { get; set; } = [];
 }
-
-// artist
-// concert
-// comment
-// venue

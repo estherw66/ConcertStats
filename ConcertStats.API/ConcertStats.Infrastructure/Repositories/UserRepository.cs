@@ -1,5 +1,6 @@
 using ConcertStats.Application.Interfaces.Repositories;
 using ConcertStats.Core.Entities;
+using ConcertStats.Core.Entities.User;
 using ConcertStats.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

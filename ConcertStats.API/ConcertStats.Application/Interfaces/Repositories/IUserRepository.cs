@@ -1,4 +1,5 @@
 using ConcertStats.Core.Entities;
+using ConcertStats.Core.Entities.User;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ConcertStats.Application.Interfaces.Repositories;
