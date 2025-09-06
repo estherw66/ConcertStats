@@ -4,10 +4,10 @@ public class Venue
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public ICollection<Room> Rooms { get; init; } = [];
     public string City { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
-    public int? Capacity { get; set; }
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+    
+    public ICollection<Room> Rooms { get; init; } = [];
 }

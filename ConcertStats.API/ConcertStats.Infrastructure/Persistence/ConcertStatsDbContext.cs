@@ -21,6 +21,8 @@ public class ConcertStatsDbContext : DbContext
     public DbSet<Artist> Artists { get; set; }  
     public DbSet<Concert> Concerts { get; set; }
     public DbSet<Venue> Venues { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    
     public DbSet<ConcertArtist> ConcertArtists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,5 +65,10 @@ public class ConcertStatsDbContext : DbContext
 
         modelBuilder.Entity<Venue>()
             .HasMany(v => v.Rooms);
+        
+        modelBuilder.Entity<Room>()
+            .HasOne(r => r.Venue)
+            .WithMany(v => v.Rooms)
+            .HasForeignKey(r => r.VenueId);
     }
 }

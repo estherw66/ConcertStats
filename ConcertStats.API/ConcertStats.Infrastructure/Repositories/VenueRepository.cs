@@ -24,6 +24,7 @@ public class VenueRepository(ConcertStatsDbContext context) : IVenueRepository
     public async Task<ICollection<Venue>> GetAllByCountryAsync(string country)
     {
         var venues = await context.Venues
+                
             .Where(v => v.Country == country)
             .ToListAsync();
         return venues;
@@ -32,18 +33,21 @@ public class VenueRepository(ConcertStatsDbContext context) : IVenueRepository
     public async Task<Venue?> GetByIdAsync(int venueId)
     {
         return await context.Venues
+            .Include(v => v.Rooms)
             .FirstOrDefaultAsync(v => v.Id == venueId);
     }
 
     public async Task<Venue?> GetByNameAsync(string name)
     {
         return await context.Venues
+            .Include(v => v.Rooms)
             .FirstOrDefaultAsync(v => v.Name == name);
     }
 
     public async Task<Venue?> GetByNameCityCountryAsync(string name, string city, string country)
     {
         return await context.Venues
+            .Include(v => v.Rooms)
             .FirstOrDefaultAsync(v => v.Name == name 
                                       && v.City == city 
                                       && v.Country == country);

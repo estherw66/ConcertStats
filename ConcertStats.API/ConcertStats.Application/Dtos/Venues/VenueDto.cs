@@ -6,5 +6,11 @@ public class VenueDto
     public string Name { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
-    public int Capacity { get; set; }
+    public ICollection<RoomDto> Rooms { get; set; } = [];
+}
+
+public class RoomDto
+{
+    public string RoomName { get; set; } = string.Empty;
+    public int? Capacity { get; set; }
 }

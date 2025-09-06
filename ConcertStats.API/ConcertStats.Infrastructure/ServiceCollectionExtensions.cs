@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddConcertStatsDatabase(connectionString)
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IVenueRepository, VenueRepository>();
     }
 }

@@ -7,6 +7,7 @@ public interface IVenueService
 {
     Task<VenueDto> CreateVenueAsync(CreateVenueRequest request);
     Task<VenueDto> GetVenueByIdAsync(int venueId);
+    Task<VenueDto> GetVenueByNameAsync(string name);
     Task<ICollection<VenueDto>> GetAllVenuesByCityAsync(string city);
     Task<ICollection<VenueDto>> GetAllVenuesByCountryAsync(string country);
     Task<VenueDto> UpdateVenueAsync(int venueId, UpdateVenueRequest request);

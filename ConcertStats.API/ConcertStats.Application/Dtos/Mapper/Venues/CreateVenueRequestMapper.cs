@@ -11,8 +11,7 @@ public static class CreateVenueRequestMapper
         {
             Name = request.Name,
             City = request.City,
-            Country = request.Country,
-            Capacity = request.Capacity
+            Country = request.Country
         };
     }
 }

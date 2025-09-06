@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         return services
             .AddScoped<IEncryptionService, EncryptionService>()
             .AddScoped<IUserService, UserService>()
+            .AddScoped<IVenueService, VenueService>()
             .AddScoped<IAuthService, AuthService>()
             .AddScoped<IPasswordHasher<UserCredentials>, PasswordHasher<UserCredentials>>();
     }

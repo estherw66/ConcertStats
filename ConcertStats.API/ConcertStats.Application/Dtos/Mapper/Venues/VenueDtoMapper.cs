@@ -13,7 +13,13 @@ public static class VenueDtoMapper
             Name = venue.Name,
             City = venue.City,
             Country = venue.Country,
-            Capacity = venue.Capacity ?? 0
+            Rooms = venue.Rooms
+                .Select(r => new RoomDto
+                {
+                    RoomName = r.RoomName!,
+                    Capacity = r.Capacity
+                })
+                .ToList()
         };
     }
 }
