@@ -1,3 +1,4 @@
+using ConcertStats.Application.Dtos.Artists;
 using ConcertStats.Core.Entities;
 
 namespace ConcertStats.Application.Interfaces.Repositories;
@@ -10,4 +11,5 @@ public interface IArtistRepository
     Task<Artist?> GetByNameAsync(string name);
     Task UpdateAsync(Artist artist);
     Task<bool> DeleteAsync(int artistId);
+    Task<bool> ExistsAsync(int id, string artistName);
 }

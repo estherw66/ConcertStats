@@ -61,4 +61,10 @@ public class ArtistRepository(ConcertStatsDbContext context) : IArtistRepository
         await context.SaveChangesAsync();
         return true;
     }
+
+    public Task<bool> ExistsAsync(int id, string artistName)
+    {
+        return context.Artists.AnyAsync(a => a.Name == artistName &&
+                                             a.Id != id);
+    }
 }

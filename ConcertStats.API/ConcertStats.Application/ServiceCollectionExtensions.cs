@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEncryptionService, EncryptionService>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<IVenueService, VenueService>()
+            .AddScoped<IArtistService, ArtistService>()
             .AddScoped<IAuthService, AuthService>()
             .AddScoped<IPasswordHasher<UserCredentials>, PasswordHasher<UserCredentials>>();
     }

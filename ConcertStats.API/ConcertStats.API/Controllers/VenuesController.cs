@@ -56,7 +56,7 @@ public class VenuesController(IVenueService venueService, ILogger<VenuesControll
         }
     }
     
-    [HttpGet("{name}")]
+    [HttpGet("name/{name}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetVenueByNameAsync(string name)
